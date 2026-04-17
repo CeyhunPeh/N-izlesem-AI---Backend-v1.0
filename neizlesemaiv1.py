@@ -45,9 +45,8 @@ MODELLER = [
         "gemini-1.5-flash"
     ]
 
-# --- GELİŞTİRİLMİŞ TMDB ARACI ---
-async def search_tmdb(query: str, category: str = "movie"):
-    """TMDB üzerinden film veya dizi bilgilerini çeker."""
+def search_tmdb(query: str, category: str = "movie"):
+    """TMDB üzerinden film veya dizi bilgilerini çeker (Synchronous)."""
     endpoint = "search/movie" if category == "movie" else "search/tv"
     url = f"https://api.themoviedb.org/3/{endpoint}"
     params = {
@@ -62,17 +61,17 @@ async def search_tmdb(query: str, category: str = "movie"):
     }
     
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(url, headers=headers, params=params)
+        # DİKKAT: Burada AsyncClient yerine Client kullanıyoruz
+        with httpx.Client(timeout=10.0) as client:
+            response = client.get(url, headers=headers, params=params)
             response.raise_for_status()
             data = response.json().get("results", [])
             
-            # Sadece gerekli alanları temizleyip AI'ya veriyoruz (Token tasarrufu)
             results = []
             for item in data[:5]:
                 results.append({
                     "ad": item.get("title") or item.get("name"),
-                    "ozet": item.get("overview")[:200] + "...", # Özeti kısa tut
+                    "ozet": item.get("overview")[:200] + "...",
                     "puan": item.get("vote_average"),
                     "tarih": item.get("release_date") or item.get("first_air_date"),
                     "poster": f"https://image.tmdb.org/t/p/w500{item.get('poster_path')}" if item.get('poster_path') else None
