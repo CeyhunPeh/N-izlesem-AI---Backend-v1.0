@@ -42,7 +42,7 @@ MODELLER = [
         "gemini-2.5-pro",
         "gemini-pro-latest",
         "gemini-1.5-flash-latest",  
-         "gemini-1.5-flash"
+        "gemini-1.5-flash"
     ]
 
 # --- GELİŞTİRİLMİŞ TMDB ARACI ---
@@ -94,18 +94,22 @@ Kullanıcı seninle konuştuğunda:
 """
 
 def get_best_model():
-    """Mevcut en iyi modeli seçer, hata verirse listeyi tarar."""
     for m_name in MODELLER:
         try:
-            # Modelin varlığını ve yeteneğini kontrol et
-            return genai.GenerativeModel(
+            # Modeli yüklüyoruz
+            curr_model = genai.GenerativeModel(
                 model_name=m_name,
                 tools=[search_tmdb],
                 system_instruction=SYSTEM_PROMPT
             )
-        except Exception:
+            # Modeli sadece döndürüyoruz, eğer çağrı anında hata verirse 
+            # chat fonksiyonu içindeki try-except bunu yakalayıp 
+            # bir sonraki döngüde farklı model denemeli.
+            return curr_model
+        except Exception as e:
+            logger.error(f"{m_name} başlatılamadı, sonrakine geçiliyor: {e}")
             continue
-    raise Exception("Hiçbir Gemini modeli şu an erişilebilir değil.")
+    return None
 
 @app.get("/chat")
 async def chat(prompt: str = Query(..., min_length=2)):
