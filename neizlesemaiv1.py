@@ -40,7 +40,9 @@ MODELLER = [
         "gemma-4-31b-it",
         "gemma-3-27b-it",
         "gemini-2.5-pro",
-        "gemini-pro-latest"
+        "gemini-pro-latest",
+        "gemini-1.5-flash-latest",  
+         "gemini-1.5-flash"
     ]
 
 # --- GELİŞTİRİLMİŞ TMDB ARACI ---
