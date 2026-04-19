@@ -33,7 +33,7 @@ MODELLER = [
     "gemini-flash-latest",
     "gemini-flash-lite-latest",
     "gemini-3-flash-preview",
-    "gemini-3.1-flash-lite-preview",
+    "gemini-3.1-flash-lite",
     "gemma-4-31b-it",
     "gemma-3-27b-it",
     "gemini-2.5-pro",
